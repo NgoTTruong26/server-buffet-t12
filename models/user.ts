@@ -1,4 +1,4 @@
-import { Model, DataTypes, Optional } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 
 import { sequelize } from ".";
 
@@ -62,9 +62,17 @@ export interface UsersAttributes {
   extends Optional<PostsAttributes, 'id'> {} */
 
 export class Users extends Model<UsersAttributes> implements UsersAttributes {
+  public id?: string;
   public fullName!: string;
   public username!: string;
   public password!: string;
+  public dateOfBirth?: string;
+  public email?: string;
+  public gender?: boolean;
+  public phoneNumber?: string;
+  public address?: string;
+  public avatar?: string;
+  public admin?: boolean;
 }
 
 Users.init(BookingsDefinition, {

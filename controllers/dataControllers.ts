@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Bookings } from "../models/booking";
 import { Posts } from "../models/posts";
+import { Users } from "../models/user";
 
 const dataController = {
   createBooking: async (req: Request, res: Response) => {
@@ -53,6 +54,22 @@ const dataController = {
       res.send({ ...data, totalPage: Math.ceil(data.count / limit) });
     } catch (err) {
       console.log(err);
+    }
+  },
+
+  getAllUsers: async (req: Request, res: Response) => {
+    try {
+      const data = await Users.findAndCountAll({
+        raw: true,
+      });
+
+      const user = data.rows.reduce((prevs: {}[], curr: Users) => {
+        const { password, ...others } = curr;
+        return [...prevs, others];
+      }, []);
+      return res.send({ count: data.count, user });
+    } catch (err) {
+      return res.status(404).send("Not Found");
     }
   },
 };

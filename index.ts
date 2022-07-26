@@ -6,7 +6,9 @@ import cors from "cors";
 
 import routes from "./Routers";
 
-const PORT = 3001;
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -42,6 +44,6 @@ routes(app);
   }
 }); */
 
-app.listen(PORT, () => {
-  console.log(`App listening on: http://localhost:${PORT}`);
+app.listen(process.env.PORT, () => {
+  console.log(`App listening on: http://localhost:${process.env.PORT}`);
 });
