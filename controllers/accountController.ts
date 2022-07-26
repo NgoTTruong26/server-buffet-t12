@@ -4,13 +4,7 @@ import { Users } from "../models/user";
 
 import * as jwt from "jsonwebtoken";
 
-class BaseController {
-  validate(a: number) {}
-}
-
-class AccountController implements BaseController {
-  constructor() {}
-
+class AccountController {
   validationRegister(): ValidationChain[] {
     return [
       body("fullName").notEmpty(),
@@ -18,8 +12,6 @@ class AccountController implements BaseController {
       body("password").notEmpty().isLength({ min: 1 }),
     ];
   }
-
-  validate() {}
 
   async register(req: Request, res: Response) {
     try {

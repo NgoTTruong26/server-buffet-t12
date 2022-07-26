@@ -4,7 +4,7 @@ import { connectDB } from "./config/connectDB";
 
 import cors from "cors";
 
-import routes from "./Routers";
+import routes from "./routers";
 
 import * as dotenv from "dotenv";
 

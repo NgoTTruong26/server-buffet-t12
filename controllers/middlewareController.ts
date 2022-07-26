@@ -24,12 +24,12 @@ class middlewareController {
     );
   }
 
-  verifyTokenAndAdminAuth(req: any, res: Response, next: NextFunction) {
+  verifyTokenAndAdminAuth = (req: any, res: Response, next: NextFunction) => {
     this.verifyToken(req, res, () => {
       if (req.user.id === req.params.id || req.user.admin) return next();
       return res.status(403).send("You are not allowed to delete other");
     });
-  }
+  };
 }
 
 export default new middlewareController();
