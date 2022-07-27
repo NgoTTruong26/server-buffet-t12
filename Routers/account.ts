@@ -19,5 +19,6 @@ account.delete(
   middlewareController.verifyTokenAndAdminAuth,
   accountController.delete
 );
+account.post("/refresh", accountController.requestRefreshToken);
 
 export default account;

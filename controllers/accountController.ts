@@ -37,7 +37,7 @@ class AccountController {
     return [body("username").notEmpty(), body("passwordClient").notEmpty()];
   }
 
-  generateAccessToken(user: Users, expiresIn: string) {
+  generateAccessToken(user: Users, expiresIn = "30s") {
     return jwt.sign(
       {
         id: user.id,
@@ -48,7 +48,7 @@ class AccountController {
     );
   }
 
-  generateRefreshToken(user: Users, expiresIn: string) {
+  generateRefreshToken(user: Users, expiresIn = "365d") {
     return jwt.sign(
       {
         id: user.id,
@@ -95,11 +95,11 @@ class AccountController {
         return res.status(401).send({
           status: res.statusCode,
           err: "Unauthorized",
-          message: "Tài khoản hoặc không chính xác!",
+          message: "Tài khoản hoặc mật khẩu không chính xác!",
         });
       }
 
-      const { password, ...other } = authAccount;
+      const { password, createdAt, updatedAt, ...other } = authAccount;
 
       const token = this.generateAccessToken(authAccount, "1h");
 
@@ -107,7 +107,7 @@ class AccountController {
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: false, // lúc deploy thì để true
         sameSite: "strict",
       });
 
@@ -124,6 +124,29 @@ class AccountController {
 
       res.status(404).send("Not found");
     }
+  };
+
+  requestRefreshToken = (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) return res.status(403).json("You're not Authenticated");
+    jwt.verify(
+      refreshToken,
+      process.env.JWT_ACCESS_KEY!,
+      (err: jwt.VerifyErrors | null, decoded: any) => {
+        if (err) {
+          return res.status(403).json("Token is invalid");
+        }
+        const newAccessToken = this.generateAccessToken(decoded);
+        const newRefreshToken = this.generateRefreshToken(decoded);
+
+        res.cookie("refreshToken", newRefreshToken, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "strict",
+        });
+        return res.status(200).json({ accessToken: newAccessToken });
+      }
+    );
   };
 
   async delete(req: Request, res: Response) {

@@ -73,6 +73,8 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
   public address?: string;
   public avatar?: string;
   public admin?: boolean;
+  public createdAt?: string;
+  public updatedAt?: string;
 }
 
 Users.init(BookingsDefinition, {
