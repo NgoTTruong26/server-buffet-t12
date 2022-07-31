@@ -7,7 +7,7 @@ class middlewareController {
     const token = req.headers.token;
 
     if (!token) {
-      res.status(401).json("you're not authenticated");
+      return res.status(401).json("you're not authenticated");
     }
     const accessToken = token.split(" ")[1];
 
@@ -16,7 +16,9 @@ class middlewareController {
       env.JWT_ACCESS_KEY!,
       (err: jwt.VerifyErrors | null, decoded: any) => {
         if (err) {
-          return res.status(403).json("Token is invalid");
+          return res
+            .status(403)
+            .json({ status: res.statusCode, err: "Token is not valid" });
         }
         req.user = decoded;
         next();

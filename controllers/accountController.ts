@@ -4,6 +4,8 @@ import { Users } from "../models/user";
 
 import * as jwt from "jsonwebtoken";
 
+const refreshTokens: string[] = [];
+
 class AccountController {
   validationRegister(): ValidationChain[] {
     return [
@@ -37,7 +39,7 @@ class AccountController {
     return [body("username").notEmpty(), body("passwordClient").notEmpty()];
   }
 
-  generateAccessToken(user: Users, expiresIn = "30s") {
+  generateAccessToken(user: Users, expiresIn = "15s") {
     return jwt.sign(
       {
         id: user.id,
@@ -99,17 +101,21 @@ class AccountController {
         });
       }
 
-      const { password, createdAt, updatedAt, ...other } = authAccount;
+      const token = this.generateAccessToken(authAccount);
 
-      const token = this.generateAccessToken(authAccount, "1h");
+      const refreshToken = this.generateRefreshToken(authAccount);
 
-      const refreshToken = this.generateRefreshToken(authAccount, "365d");
+      refreshTokens.push(refreshToken);
 
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: false, // lúc deploy thì để true
         sameSite: "strict",
       });
+
+      console.log(res);
+
+      const { password, createdAt, updatedAt, ...other } = authAccount;
 
       return res.status(201).send({
         status: res.statusCode,
@@ -128,16 +134,27 @@ class AccountController {
 
   requestRefreshToken = (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
+    console.log(req.cookies);
+
     if (!refreshToken) return res.status(403).json("You're not Authenticated");
+
+    if (!refreshTokens.includes(refreshToken))
+      return res.status(403).json("refresh token is not valid");
+
     jwt.verify(
       refreshToken,
-      process.env.JWT_ACCESS_KEY!,
+      process.env.JWT_REFRESH_KEY!,
       (err: jwt.VerifyErrors | null, decoded: any) => {
         if (err) {
-          return res.status(403).json("Token is invalid");
+          return res.status(403).json(err);
         }
+
+        refreshTokens.filter((value) => value !== refreshToken);
+
         const newAccessToken = this.generateAccessToken(decoded);
         const newRefreshToken = this.generateRefreshToken(decoded);
+
+        refreshTokens.push(newRefreshToken);
 
         res.cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
@@ -164,6 +181,12 @@ class AccountController {
     } catch (err) {
       res.status(404).send("Not found");
     }
+  }
+
+  logout(req: Request, res: Response) {
+    refreshTokens.filter((token) => token !== req.cookies.refreshToken);
+    res.clearCookie("refreshToken");
+    return res.json("Logged out success!");
   }
 }
 

@@ -14,6 +14,11 @@ account.post(
   ...accountController.validationLogin(),
   accountController.login
 );
+account.post(
+  "/logout",
+  middlewareController.verifyToken,
+  accountController.logout
+);
 account.delete(
   "/delete-account/:id",
   middlewareController.verifyTokenAndAdminAuth,

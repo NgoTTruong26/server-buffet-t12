@@ -1,4 +1,4 @@
-import { application, Express } from "express";
+import { Express } from "express";
 import account from "./account";
 import routerBooking from "./createBooking";
 import getData from "./getData";

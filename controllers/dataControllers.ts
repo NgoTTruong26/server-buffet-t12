@@ -63,11 +63,11 @@ const dataController = {
         raw: true,
       });
 
-      const user = data.rows.reduce((prevs: {}[], curr: Users) => {
+      const users = data.rows.reduce((prevs: {}[], curr: Users) => {
         const { password, ...others } = curr;
         return [...prevs, others];
       }, []);
-      return res.send({ count: data.count, user });
+      return res.send({ count: data.count, users });
     } catch (err) {
       return res.status(404).send("Not Found");
     }
