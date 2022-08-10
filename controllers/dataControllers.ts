@@ -57,7 +57,7 @@ const dataController = {
     }
   },
 
-  getAllUsers: async (req: Request, res: Response) => {
+  getAllUsers: async (req: any, res: Response) => {
     try {
       const data = await Users.findAndCountAll({
         raw: true,

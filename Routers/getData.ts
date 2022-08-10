@@ -1,6 +1,6 @@
 import { Router } from "express";
 import dataController from "../controllers/dataControllers";
-import middlewareController from "../controllers/middlewareController";
+import middlewareController from "../middlewares/middlewareController";
 
 const getData = Router();
 

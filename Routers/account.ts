@@ -1,6 +1,6 @@
 import { Router } from "express";
 import accountController from "../controllers/accountController";
-import middlewareController from "../controllers/middlewareController";
+import middlewareController from "../middlewares/middlewareController";
 
 const account = Router();
 

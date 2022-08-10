@@ -23,13 +23,28 @@ class AccountController {
         return res.status(400).json({ error: errors.array() });
       }
 
-      const fullName: string = req.body.fullName;
-      const username: string = req.body.username;
-      const password: string = req.body.password;
+      const fullNameReq: string = req.body.fullName;
+      const usernameReq: string = req.body.username;
+      const passwordReq: string = req.body.password;
 
-      await Users.create({ fullName, username, password });
+      const user = await Users.create({
+        fullName: fullNameReq,
+        username: usernameReq,
+        password: passwordReq,
+      });
 
-      res.send("Successfully registered");
+      const getNewUser = await Users.findOne({
+        raw: true,
+        where: { id: user.id },
+      });
+
+      const { password, updatedAt, createdAt, ...other } = getNewUser!;
+
+      res.json({
+        status: res.statusCode,
+        message: "Successfully registered",
+        data: other,
+      });
     } catch (err: any) {
       res.send(err.message);
     }
@@ -112,9 +127,6 @@ class AccountController {
         secure: false, // lúc deploy thì để true
         sameSite: "strict",
       });
-
-      console.log(res);
-
       const { password, createdAt, updatedAt, ...other } = authAccount;
 
       return res.status(201).send({
@@ -185,6 +197,7 @@ class AccountController {
 
   logout(req: Request, res: Response) {
     refreshTokens.filter((token) => token !== req.cookies.refreshToken);
+
     res.clearCookie("refreshToken");
     return res.json("Logged out success!");
   }

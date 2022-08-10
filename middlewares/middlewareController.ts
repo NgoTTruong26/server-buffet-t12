@@ -5,6 +5,7 @@ import { env } from "process";
 class middlewareController {
   verifyToken(req: any, res: Response, next: NextFunction) {
     const token = req.headers.token;
+    console.log(token);
 
     if (!token) {
       return res.status(401).json("you're not authenticated");
