@@ -40,8 +40,11 @@ module.exports = {
       },
       admin: {
         defaultValue: false,
-        allowNull: false,
         type: DataTypes.BOOLEAN,
+      },
+      position: {
+        defaultValue: "Khách Hàng",
+        type: DataTypes.STRING,
       },
       createdAt: {
         allowNull: false,

@@ -42,6 +42,10 @@ const BookingsDefinition = {
   admin: {
     type: DataTypes.BOOLEAN,
   },
+  position: {
+    type: DataTypes.STRING,
+    defaultValue: "Khách Hàng",
+  },
 };
 
 export interface UsersAttributes {
@@ -56,25 +60,27 @@ export interface UsersAttributes {
   address?: string;
   avatar?: string;
   admin?: boolean;
+  position?: string;
 }
 
 /* export interface PostsCreationAttributes
   extends Optional<PostsAttributes, 'id'> {} */
 
 export class Users extends Model<UsersAttributes> implements UsersAttributes {
-  public id?: string;
-  public fullName!: string;
-  public username!: string;
-  public password!: string;
-  public dateOfBirth?: string;
-  public email?: string;
-  public gender?: boolean;
-  public phoneNumber?: string;
-  public address?: string;
-  public avatar?: string;
-  public admin?: boolean;
-  public createdAt?: string;
-  public updatedAt?: string;
+  readonly id?: string;
+  readonly fullName!: string;
+  readonly username!: string;
+  readonly password!: string;
+  readonly dateOfBirth?: string;
+  readonly email?: string;
+  readonly gender?: boolean;
+  readonly phoneNumber?: string;
+  readonly address?: string;
+  readonly avatar?: string;
+  readonly admin?: boolean;
+  readonly position?: string;
+  readonly createdAt?: string;
+  readonly updatedAt?: string;
 }
 
 Users.init(BookingsDefinition, {

@@ -38,7 +38,9 @@ class AccountController {
         where: { id: user.id },
       });
 
-      const { password, updatedAt, createdAt, ...other } = getNewUser!;
+      const { password, ...other } = getNewUser!;
+
+      console.log(other);
 
       res.json({
         status: res.statusCode,
